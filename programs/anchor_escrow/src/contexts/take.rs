@@ -9,7 +9,10 @@ use crate::state::Escrow;
 #[derive(Accounts)]
 pub struct Take<'info> {
     #[account(mut)]
-    pub maker: SystemAccount<'info>,
+    pub taker: Signer<'info>,
+    #[account(mut)]
+    //Check: this is safe
+    pub maker: UncheckedAccount<'info>,
     #[account(
         init_if_needed,
         payer = taker,
@@ -18,8 +21,6 @@ pub struct Take<'info> {
     )]
     pub maker_receive_ata: Account<'info, TokenAccount>,
     pub maker_token: Box<Account<'info, Mint>>,
-    #[account(mut)]
-    pub taker: Signer<'info>,
     #[account(
         mut,
         associated_token::mint = taker_token,
